@@ -7,9 +7,20 @@ id = "process1"
 name = "To Do"
 
   [[processes.tasks]]
-  id = "task1"
-  title = "This is a new feature"
+  id = "um4oyg3pr4cwqes5mwga4l9u"
+  title = "Design The Database"
   description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "d2bxsg960q2se9n419kc93fh"
+  title = "Create Schemea Objects"
+  description = "<p></p>"
   tag = "backlog"
   linkFiles = [ ]
   dueDate = ""
@@ -20,19 +31,19 @@ name = "To Do"
 [[processes]]
 id = "process2"
 name = "In Progress"
+tasks = [ ]
+
+[[processes]]
+id = "process3"
+name = "Done"
 
   [[processes.tasks]]
-  id = "task2"
-  title = "This is a bug should be repair"
-  description = ""
-  tag = "bug"
+  id = "task1"
+  title = "Find Sources"
+  description = "<p>Create a document with links to websites that are used when researching dugs and their adverse affects. (In the United States)</p>"
+  tag = "backlog"
   linkFiles = [ ]
   dueDate = ""
   checkList = [ ]
   priority = ""
   linkCommits = [ ]
-
-[[processes]]
-id = "process3"
-name = "Done"
-tasks = [ ]
