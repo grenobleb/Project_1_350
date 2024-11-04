@@ -1,3 +1,9 @@
+CREATE TABLE drug_codes (
+    id VARCHAR,
+    atc_code VARCHAR
+);
+
+COPY drug_codes (id, atc_code) FROM stdin DELIMITER E'\t';
 CID100000085	A16AA01
 CID100000119	L03AA03
 CID100000119	N03AG03
