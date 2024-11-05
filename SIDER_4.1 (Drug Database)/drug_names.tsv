@@ -1,9 +1,9 @@
-CREATE TABLE drugs (
+CREATE TABLE drug_names (
     id VARCHAR,
     name VARCHAR
 );
 
-COPY drugs (id, name) FROM stdin DELIMITER E'\t';
+COPY drug_names (id, name) FROM stdin DELIMITER E'\t';
 CID100000085	carnitine
 CID100000119	gamma-aminobutyric
 CID100000137	5-aminolevulinic
