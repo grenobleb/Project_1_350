@@ -8,7 +8,7 @@ CREATE TABLE meddra_all_indications (
     MedDRA_concept_name VARCHAR
 );
 
-COPY meddra_all_indications (STITCH_compound_id, UMLS_concept_id, detection_method, concept_name, MedDRA_concept_type, UMLS_concept_id_MedDRA, MedDRA_concept_name) FROM stdin DELIMITER E'\t';
+COPY meddra_all_indications (STITCH_compound_id, UMLS_concept_id_label, detection_method, concept_name, MedDRA_concept_type, UMLS_concept_id_MedDRA, MedDRA_concept_name) FROM stdin DELIMITER E'\t';
 CID100000085	C0015544	text_mention	Failure to Thrive	LLT	C0015544	Failure to thrive
 CID100000085	C0015544	text_mention	Failure to Thrive	PT	C0015544	Failure to thrive
 CID100000085	C0020615	text_mention	Hypoglycemia	LLT	C0020615	Hypoglycaemia
