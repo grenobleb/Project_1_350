@@ -7,17 +7,6 @@ id = "process1"
 name = "To Do"
 
   [[processes.tasks]]
-  id = "um4oyg3pr4cwqes5mwga4l9u"
-  title = "Create the ERD model"
-  description = "<p></p>"
-  tag = "backlog"
-  linkFiles = [ ]
-  dueDate = ""
-  checkList = [ ]
-  priority = ""
-  linkCommits = [ ]
-
-  [[processes.tasks]]
   id = "d2bxsg960q2se9n419kc93fh"
   title = "Create Functions"
   description = "<p></p>"
@@ -53,7 +42,17 @@ name = "To Do"
 [[processes]]
 id = "process2"
 name = "In Progress"
-tasks = [ ]
+
+  [[processes.tasks]]
+  id = "um4oyg3pr4cwqes5mwga4l9u"
+  title = "Create the ERD model"
+  description = "<p></p>"
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
 
 [[processes]]
 id = "process3"
