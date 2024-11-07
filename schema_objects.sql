@@ -48,6 +48,14 @@ CREATE TABLE meddra (
     side_effect_name VARCHAR
 );
 
+CREATE TABLE drug_names_log (
+    log_id SERIAL PRIMAL KEY,
+    id VARCHAR,
+    name VARCHAR,
+    operation VARCHAR,
+    operation_time TIMESTAMP
+);
+
 -- Functions
 
 -- Function 1
@@ -104,6 +112,28 @@ BEGIN
 END;
 $$;
 
+-- Function 5
+CREATE OR REPLACE FUNCTION log_drug_names_change()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO drug_names_log (id, name, operation, operation_time)
+        VALUES (NEW.id, NEW.name, 'INSERT', NOW());
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO drug_names_log (id, name, operation, operation_time)
+        VALUES (NEW.id, NEW.name, 'UPDATE', NOW());
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO drug_names_log (id, name, operation, operation_time)
+        VALUES (OLD.id, OLD.name, 'DELETE', NOW());
+        RETURN OLD;
+    END IF;
+END;
+$$;
+
 --Index
 CREATE INDEX idx_drug_name ON drug_names(drug_name);
 
@@ -129,6 +159,13 @@ BEGIN
     ORDER BY name ASC;
 END;
 $$
+
+-- Triggers
+CREATE TRIGGER trigger_log_drug_names_changes
+AFTER INSERT OR UPDATE OR DELETE
+ON drug_names
+FOR EACH ROW
+EXECUTE FUNCTION log_drug_names_changes();
 
 -- Constraints
 ALTER TABLE drug_names 
