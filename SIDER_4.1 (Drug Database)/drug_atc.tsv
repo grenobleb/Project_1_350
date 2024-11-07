@@ -1,8 +1,3 @@
-CREATE TABLE drug_atc (
-    id VARCHAR,
-    atc_code VARCHAR
-);
-
 COPY drug_atc (id, atc_code) FROM stdin DELIMITER E'\t';
 CID100000085	A16AA01
 CID100000119	L03AA03
