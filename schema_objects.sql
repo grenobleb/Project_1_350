@@ -49,6 +49,8 @@ CREATE TABLE meddra (
 );
 
 -- Functions
+
+-- Function 1
 CREATE OR REPLACE FUNCTION GetDrugNamesInAlphabeticalOrder()
 RETURNS TABLE (name VARCHAR)
 LANGUAGE plpgsql
@@ -61,6 +63,7 @@ BEGIN
 END;
 $$;
 
+-- Function 2
 CREATE OR REPLACE FUNCTION GetDrugsStartingWithA()
 RETURNS TABLE (name VARCHAR)
 LANGUAGE plpgsql
@@ -71,6 +74,33 @@ BEGIN
     FROM drug_names
     WHERE name LIKE 'A%'
     ORDER BY name ASC;
+END;
+$$;
+
+-- Function 3
+CREATE OR REPLACE FUNCTION GetDrugsFromPToZ()
+RETURNS TABLE (id VARCHAR, name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT id, name
+    FROM drug_names
+    WHERE name >= 'P' AND name <= 'Z'
+    ORDER BY name ASC;
+END;
+$$;
+
+-- Function 4
+CREATE OR REPLACE FUNCTION GetMedDRAIdAndSideEffectName()
+RETURNS TABLE (MedDRA_id VARCHAR, side_effect_name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT MedDRA_id, side_effect_name
+    FROM meddra
+    ORDER BY side_effect_name ASC;
 END;
 $$;
 
