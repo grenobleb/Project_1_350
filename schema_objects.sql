@@ -108,7 +108,27 @@ $$;
 CREATE INDEX idx_drug_name ON drug_names(drug_name);
 
 -- Procedures
-CREATE OR REPLACE PROCEDURE 
+
+-- Procedure 1
+CREATE OR REPLACE PROCEDURE DisplaysSideEffectsForDrugName(IN drug_name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    PERFORM side_effect_name
+    FROM meddra
+    WHERE MedDRA_id = input_MedDRA_id;
+END;
+$$;
+
+-- Procedure 2
+CREATE OR REPLACE PROCEDURE DisplayDrugNameInAlphabeticalORder()
+LANGUAGE plpgsql 
+AS $$
+BEGIN
+    PERFORM * FROM G
+    ORDER BY name ASC;
+END;
+$$
 
 -- Constraints
 ALTER TABLE drug_names 
