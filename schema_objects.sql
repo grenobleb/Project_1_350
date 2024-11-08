@@ -1,4 +1,4 @@
--- Tables
+-- -- Tables -- --
 CREATE TABLE drug_atc (
     id VARCHAR,
     atc_code VARCHAR
@@ -49,16 +49,16 @@ CREATE TABLE meddra (
 );
 
 CREATE TABLE drug_names_log (
-    log_id SERIAL PRIMAL KEY,
+    log_id SERIAL PRIMARY KEY,
     id VARCHAR,
     name VARCHAR,
     operation VARCHAR,
     operation_time TIMESTAMP
 );
 
--- Functions
+-- -- Functions -- --
 
--- Function 1
+-- -- Function 1 -- --
 CREATE OR REPLACE FUNCTION GetDrugNamesInAlphabeticalOrder()
 RETURNS TABLE (name VARCHAR)
 LANGUAGE plpgsql
@@ -71,7 +71,7 @@ BEGIN
 END;
 $$;
 
--- Function 2
+-- -- Function 2 -- --
 CREATE OR REPLACE FUNCTION GetDrugsStartingWithA()
 RETURNS TABLE (name VARCHAR)
 LANGUAGE plpgsql
@@ -85,7 +85,7 @@ BEGIN
 END;
 $$;
 
--- Function 3
+-- -- Function 3 -- --
 CREATE OR REPLACE FUNCTION GetDrugsFromPToZ()
 RETURNS TABLE (id VARCHAR, name VARCHAR)
 LANGUAGE plpgsql
@@ -99,7 +99,7 @@ BEGIN
 END;
 $$;
 
--- Function 4
+-- -- Function 4 -- --
 CREATE OR REPLACE FUNCTION GetMedDRAIdAndSideEffectName()
 RETURNS TABLE (MedDRA_id VARCHAR, side_effect_name VARCHAR)
 LANGUAGE plpgsql
@@ -112,7 +112,7 @@ BEGIN
 END;
 $$;
 
--- Function 5
+-- -- Function 5 -- --
 CREATE OR REPLACE FUNCTION log_drug_names_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -134,12 +134,67 @@ BEGIN
 END;
 $$;
 
---Index
-CREATE INDEX idx_drug_name ON drug_names(drug_name);
+-- -- Function 6 -- --
+CREATE OR REPLACE FUNCTION GetSideEffectsForDrug(drug_name VARCHAR)
+RETURNS TABLE (
+    UMLS_concept_id VARCHAR,
+    MedDRA_id VARCHAR,
+    kind_of_term VARCHAR,
+    side_effect_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        m.UMLS_concept_id,
+        m.MedDRA_id,
+        m.kind_of_term,
+        m.side_effect_name
+    FROM 
+        meddra m
+    JOIN 
+        drug_names dn ON dn.id = m.UMLS_concept_id
+    WHERE 
+        dn.name = drug_name;
+END;
+$$;
 
--- Procedures
+-- -- Index -- --
+CREATE INDEX idx_drug_name ON drug_names(name);
+CREATE INDEX idx_drug_id ON drug_names(id);
+CREATE INDEX idx_atc_id ON drug_atc(id);
+CREATE INDEX idx_atc_code ON drug_atc(atc_code);
+CREATE INDEX idx_meddra_id ON meddra(medDRA_id);
+CREATE INDEX idx_meddra_UMLS ON meddra(UMLS_concept_id);
+CREATE INDEX idx_meddra_term ON meddra(kind_of_term);
+CREATE INDEX idx_meddra_side_effect_name ON meddra(side_effect_name);
+CREATE INDEX idx_meddra_all_indications_STITCH_id ON meddra_all_indications(STITCH_compound_id)
+CREATE INDEX idx_meddra_all_indications_UMLS_concept_id ON meddra_all_indications(UMLS_concept_id_MedDRA);CREATE INDEX idx_meddra_all_indication_detection_method ON meddra_all_indications(detection_method);
+CREATE INDEX idx_meddra_all_inication_concept_name ON meddra_all_indications(concept_name);
+CREATE INDEX idx_meddra_all_indication_MedDra_concept_type ON meddra_all_indications(MedDRA_concept_type);
+CREATE INDEX idx_meddra_all_indication_UMLS_concept_id_MedDRA ON meddra_all_indications(UMLS_concept_id_MedDRA);
+CREATE INDEX idx_meddra_all_indication_MedDRA_concept_name ON meddra_all_indications(MedDRA_concept_name);
+CREATE INDEX idx_meddra_all_se_STITCH_compound_id_flat ON meddra_all_se(STITCH_compound_id_flat);
+CREATE INDEX idx_meddra_all_se_STITCH_compound_id_stereo ON meddra_all_se(STITCH_compound_id_stereo);
+CREATE INDEX idx_meddra_all_se_UMLS_concept_id_label ON meddra_all_se(UMLS_concept_id_label);
+CREATE INDEX idx_meddra_all_se_MedDRA_concept_type ON meddra_all_se(MedDRA_concept_type);
+CREATE INDEX idx_meddra_all_se_MedDRA_concept_id ON meddra_all_se(MedDRA_concept_id);
+CREATE INDEX idx_meddra_all_se_MedDRA_concept_name ON meddra_all_se(MedDRA_concept_name);
+CREATE INDEX idx_meddra_freq_STITCH_compound_id_flat ON meddra_freq(STITCH_compound_id_flat);
+CREATE INDEX idx_meddra_freq_STITCH_compound_id_stereo ON meddra_freq(STITCH_compound_id_stereo);
+CREATE INDEX idx_meddra_freq_UMLS_concept_id_label ON meddra_freq(UMLS_concept_id_label);
+CREATE INDEX idx_meddra_freq_treatment_group ON meddra_freq(treatment_group);
+CREATE INDEX idx_meddra_freq_frequency ON meddra_freq(frequency);
+CREATE INDEX idx_meddra_freq_lower_frequency ON meddra_freq(lower_frequency);
+CREATE INDEX idx_meddra_freq_upper_frequency ON meddra_freq(upper_frequency);
+CREATE INDEX idx_meddra_freq_MedDRA_concept_type ON meddra_freq(MedDRA_concept_type);
+CREATE INDEX idx_meddra_freq_MedDRA_concept_id ON meddra_freq(MedDRA_concept_id);
+CREATE INDEX idx_meddra_freq_MedDRA_concept_name ON meddra_freq(MedDRA_concept_name);
 
--- Procedure 1
+-- -- Procedures -- --
+
+-- -- Procedure 1 -- --
 CREATE OR REPLACE PROCEDURE DisplaysSideEffectsForDrugName(IN drug_name VARCHAR)
 LANGUAGE plpgsql
 AS $$
@@ -150,7 +205,7 @@ BEGIN
 END;
 $$;
 
--- Procedure 2
+-- -- Procedure 2 -- --
 CREATE OR REPLACE PROCEDURE DisplayDrugNameInAlphabeticalORder()
 LANGUAGE plpgsql 
 AS $$
@@ -160,14 +215,99 @@ BEGIN
 END;
 $$
 
--- Triggers
+-- -- Procedure 3 -- --
+CREATE OR REPLACE PROCEDURE InsertDrugNameAndLog(
+    new_id VARCHAR,
+    new_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert the new drug name into the drug_names table
+    INSERT INTO drug_names (id, name)
+    VALUES (new_id, new_name);
+
+    -- Log the insertion operation in the drug_names_log table
+    INSERT INTO drug_names_log (id, name, operation, operation_time)
+    VALUES (new_id, new_name, 'INSERT', NOW());
+END;
+$$;
+
+-- -- Procedure 4 -- --
+CREATE OR REPLACE PROCEDURE InsertMeddraIndication(
+    new_STITCH_compound_id VARCHAR,
+    new_UMLS_concept_id_label VARCHAR,
+    new_detection_method VARCHAR,
+    new_concept_name VARCHAR,
+    new_MedDRA_concept_type VARCHAR,
+    new_UMLS_concept_id_MedDRA VARCHAR,
+    new_MedDRA_concept_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert new indication into the meddra_all_indications table
+    INSERT INTO meddra_all_indications (
+        STITCH_compound_id,
+        UMLS_concept_id_label,
+        detection_method,
+        concept_name,
+        MedDRA_concept_type,
+        UMLS_concept_id_MedDRA,
+        MedDRA_concept_name
+    )
+    VALUES (
+        new_STITCH_compound_id,
+        new_UMLS_concept_id_label,
+        new_detection_method,
+        new_concept_name,
+        new_MedDRA_concept_type,
+        new_UMLS_concept_id_MedDRA,
+        new_MedDRA_concept_name
+    );
+END;
+$$;
+
+-- -- Procedure 5 -- --
+CREATE OR REPLACE PROCEDURE InsertMeddraSideEffect(
+    new_STITCH_compound_id_flat VARCHAR,
+    new_STITCH_compound_id_stereo VARCHAR,
+    new_UMLS_concept_id_label VARCHAR,
+    new_MedDRA_concept_type VARCHAR,
+    new_MedDRA_concept_id VARCHAR,
+    new_MedDRA_concept_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert the new side effect into the meddra_all_se table
+    INSERT INTO meddra_all_se (
+        STITCH_compound_id_flat,
+        STITCH_compound_id_stereo,
+        UMLS_concept_id_label,
+        MedDRA_concept_type,
+        MedDRA_concept_id,
+        MedDRA_concept_name
+    )
+    VALUES (
+        new_STITCH_compound_id_flat,
+        new_STITCH_compound_id_stereo,
+        new_UMLS_concept_id_label,
+        new_MedDRA_concept_type,
+        new_MedDRA_concept_id,
+        new_MedDRA_concept_name
+    );
+END;
+$$;
+
+-- -- Triggers -- --
 CREATE TRIGGER trigger_log_drug_names_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON drug_names
 FOR EACH ROW
 EXECUTE FUNCTION log_drug_names_changes();
 
--- Constraints
+-- -- Constraints -- --
 ALTER TABLE drug_names 
 ADD CONSTRAINT drug_names_pkey 
 PRIMARY KEY (id);
@@ -176,6 +316,10 @@ ALTER TABLE drug_atc
 ADD CONSTRAINT fk_drug_atc_drug_names_id 
 FOREIGN KEY (id) REFERENCES drug_names(id);
 
-ALTER TABLE meddra 
-ADD CONSTRAINT fk_meddra_drug_names_id 
-FOREIGN KEY (umls_concept_id) REFERENCES drug_names(id);
+ALTER TABLE meddra_freq
+ADD CONSTRAINT fk_meddra_freq_drug_names_id
+FOREIGN KEY (STITCH_compound_id_flat) REFERENCES drug_names(id);
+
+ALTER TABLE meddra_all_se
+ADD CONSTRAINT fk_meddra_freq_drug_names_id
+FOREIGN KEY (STITCH_compound_id_flat) REFERENCES drug_names(id);
