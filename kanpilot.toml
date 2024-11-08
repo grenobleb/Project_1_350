@@ -28,17 +28,6 @@ name = "To Do"
   priority = ""
   linkCommits = [ ]
 
-  [[processes.tasks]]
-  id = "s7mgw0foy60we1a6ppic579m"
-  title = "Create Indexes"
-  description = "<p></p>"
-  tag = "backlog"
-  linkFiles = [ ]
-  dueDate = ""
-  checkList = [ ]
-  priority = ""
-  linkCommits = [ ]
-
 [[processes]]
 id = "process2"
 name = "In Progress"
@@ -84,6 +73,17 @@ name = "Done"
   id = "hdj7e8fk3q0lcu9rbfmcxhlm"
   title = "Create Tables"
   description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "s7mgw0foy60we1a6ppic579m"
+  title = "Create Indexes"
+  description = "<p></p>"
   tag = "backlog"
   linkFiles = [ ]
   dueDate = ""
