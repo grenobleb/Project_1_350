@@ -134,6 +134,32 @@ BEGIN
 END;
 $$;
 
+-- Function 6 --
+CREATE OR REPLACE FUNCTION GetSideEffectsForDrug(drug_name VARCHAR)
+RETURNS TABLE (
+    UMLS_concept_id VARCHAR,
+    MedDRA_id VARCHAR,
+    kind_of_term VARCHAR,
+    side_effect_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        m.UMLS_concept_id,
+        m.MedDRA_id,
+        m.kind_of_term,
+        m.side_effect_name
+    FROM 
+        meddra m
+    JOIN 
+        drug_names dn ON dn.id = m.UMLS_concept_id
+    WHERE 
+        dn.name = drug_name;
+END;
+$$;
+
 --Index
 CREATE INDEX idx_drug_name ON drug_names(drug_name);
 
@@ -159,6 +185,92 @@ BEGIN
     ORDER BY name ASC;
 END;
 $$
+
+-- -- Procedure 3 -- --
+CREATE OR REPLACE PROCEDURE InsertDrugNameAndLog(
+    new_id VARCHAR,
+    new_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert the new drug name into the drug_names table
+    INSERT INTO drug_names (id, name)
+    VALUES (new_id, new_name);
+
+    -- Log the insertion operation in the drug_names_log table
+    INSERT INTO drug_names_log (id, name, operation, operation_time)
+    VALUES (new_id, new_name, 'INSERT', NOW());
+END;
+$$;
+
+-- Procedure 4 -- --
+CREATE OR REPLACE PROCEDURE InsertMeddraIndication(
+    new_STITCH_compound_id VARCHAR,
+    new_UMLS_concept_id_label VARCHAR,
+    new_detection_method VARCHAR,
+    new_concept_name VARCHAR,
+    new_MedDRA_concept_type VARCHAR,
+    new_UMLS_concept_id_MedDRA VARCHAR,
+    new_MedDRA_concept_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert new indication into the meddra_all_indications table
+    INSERT INTO meddra_all_indications (
+        STITCH_compound_id,
+        UMLS_concept_id_label,
+        detection_method,
+        concept_name,
+        MedDRA_concept_type,
+        UMLS_concept_id_MedDRA,
+        MedDRA_concept_name
+    )
+    VALUES (
+        new_STITCH_compound_id,
+        new_UMLS_concept_id_label,
+        new_detection_method,
+        new_concept_name,
+        new_MedDRA_concept_type,
+        new_UMLS_concept_id_MedDRA,
+        new_MedDRA_concept_name
+    );
+END;
+$$;
+
+-- -- Procedure 5 -- --
+CREATE OR REPLACE PROCEDURE InsertMeddraSideEffect(
+    new_STITCH_compound_id_flat VARCHAR,
+    new_STITCH_compound_id_stereo VARCHAR,
+    new_UMLS_concept_id_label VARCHAR,
+    new_MedDRA_concept_type VARCHAR,
+    new_MedDRA_concept_id VARCHAR,
+    new_MedDRA_concept_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert the new side effect into the meddra_all_se table
+    INSERT INTO meddra_all_se (
+        STITCH_compound_id_flat,
+        STITCH_compound_id_stereo,
+        UMLS_concept_id_label,
+        MedDRA_concept_type,
+        MedDRA_concept_id,
+        MedDRA_concept_name
+    )
+    VALUES (
+        new_STITCH_compound_id_flat,
+        new_STITCH_compound_id_stereo,
+        new_UMLS_concept_id_label,
+        new_MedDRA_concept_type,
+        new_MedDRA_concept_id,
+        new_MedDRA_concept_name
+    );
+END;
+$$;
+
 
 -- Triggers
 CREATE TRIGGER trigger_log_drug_names_changes
