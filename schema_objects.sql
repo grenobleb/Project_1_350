@@ -232,7 +232,6 @@ BEGIN
     VALUES (new_id, new_name, 'INSERT', NOW());
 END;
 $$;
-
 -- -- Procedure 4 -- --
 CREATE OR REPLACE PROCEDURE InsertMeddraIndication(
     new_STITCH_compound_id VARCHAR,
