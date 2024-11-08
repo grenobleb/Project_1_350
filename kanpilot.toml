@@ -5,43 +5,12 @@ skipFiles = [ ".gitignore", "package.json" ]
 [[processes]]
 id = "process1"
 name = "To Do"
-
-  [[processes.tasks]]
-  id = "d2bxsg960q2se9n419kc93fh"
-  title = "Create Functions"
-  description = "<p></p>"
-  tag = "backlog"
-  linkFiles = [ ]
-  dueDate = ""
-  checkList = [ ]
-  priority = ""
-  linkCommits = [ ]
-
-  [[processes.tasks]]
-  id = "qjchduxo8ig775mdl6pzasgt"
-  title = "Create Procedures"
-  description = ""
-  tag = "backlog"
-  linkFiles = [ ]
-  dueDate = ""
-  checkList = [ ]
-  priority = ""
-  linkCommits = [ ]
+tasks = [ ]
 
 [[processes]]
 id = "process2"
 name = "In Progress"
-
-  [[processes.tasks]]
-  id = "um4oyg3pr4cwqes5mwga4l9u"
-  title = "Create the ERD model"
-  description = "<p></p>"
-  tag = "backlog"
-  linkFiles = [ ]
-  dueDate = ""
-  checkList = [ ]
-  priority = ""
-  linkCommits = [ ]
+tasks = [ ]
 
 [[processes]]
 id = "process3"
@@ -83,6 +52,39 @@ name = "Done"
   [[processes.tasks]]
   id = "s7mgw0foy60we1a6ppic579m"
   title = "Create Indexes"
+  description = "<p></p>"
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "d2bxsg960q2se9n419kc93fh"
+  title = "Create Functions"
+  description = "<p></p>"
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "qjchduxo8ig775mdl6pzasgt"
+  title = "Create Procedures"
+  description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "um4oyg3pr4cwqes5mwga4l9u"
+  title = "Create the ERD model"
   description = "<p></p>"
   tag = "backlog"
   linkFiles = [ ]
